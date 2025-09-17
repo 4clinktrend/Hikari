@@ -1,17 +1,27 @@
 import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
 import {
   getUser,
   getUserDetails,
   getSubscription
 } from '@/utils/supabase/queries';
-import Posts from '@/components/posts';
 import { redirect } from 'next/navigation';
 
+// Inline Posts component for template
+const Posts = ({ user }: { user: any }) => (
+  <div className="container mx-auto p-4">
+    <h1 className="text-2xl font-bold mb-4">Welcome, {user?.email || 'User'}!</h1>
+    <p className="text-muted-foreground">
+      This is a template dashboard. Replace this component with your actual content.
+    </p>
+  </div>
+);
+
 export default async function DashboardPage() {
-  const supabase = createClient();
+  const supabase = createClient({ cookies });
   const [user, userDetails] = await Promise.all([
-    getUser(supabase),
-    getUserDetails(supabase)
+    getUser(),
+    getUserDetails()
     ]);
 
   if (!user) {
